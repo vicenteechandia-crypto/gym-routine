@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Rutina T/P" />
+<meta name="theme-color" content="#1B1A17" />
+<title>Rutina Torso/Pierna</title>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231B1A17'/%3E%3Crect x='15' y='44' width='70' height='12' rx='3' fill='%23C1501F'/%3E%3Crect x='8' y='36' width='10' height='28' rx='2' fill='%23F0EBDD'/%3E%3Crect x='82' y='36' width='10' height='28' rx='2' fill='%23F0EBDD'/%3E%3C/svg%3E" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#1B1A17;
+    --surface:#242220;
+    --surface-2:#2C2925;
+    --line:#3A362F;
+    --ink:#F0EBDD;
+    --ink-dim:#A69C8C;
+    --ink-faint:#6E6656;
+    --compound:#C1501F;
+    --compound-dim:rgba(193,80,31,0.16);
+    --isolation:#6C93A6;
+    --isolation-dim:rgba(108,147,166,0.16);
+    --gold:#E3B23C;
+    --good:#7FA66B;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;}
+  body{padding-bottom:90px;}
+
+  ::selection{background:var(--gold); color:#1B1A17;}
+
+  /* Header */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(180deg, var(--bg) 70%, rgba(27,26,23,0));
+    padding:22px 18px 10px;
+  }
+  .brand-row{display:flex; align-items:baseline; justify-content:space-between; gap:10px;}
+  .brand{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:34px; letter-spacing:1px; line-height:1;
+    color:var(--ink);
+  }
+  .brand span{color:var(--compound);}
+  .brand-sub{font-size:11px; color:var(--ink-faint); letter-spacing:1.5px; text-transform:uppercase; margin-top:2px;}
+
+  /* Tabs */
+  .tabs{
+    display:flex; gap:6px; overflow-x:auto; margin-top:16px; padding-bottom:4px;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; font-weight:600; letter-spacing:0.5px;
+    padding:9px 14px; border-radius:8px;
+    background:var(--surface); color:var(--ink-dim);
+    border:1px solid var(--line);
+    cursor:pointer; white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .tab.active{
+    background:var(--compound); color:#1B1A17; border-color:var(--compound);
+  }
+  .tab.guide-tab.active{background:var(--isolation); border-color:var(--isolation);}
+
+  main{padding:8px 18px 20px;}
+
+  /* Day header */
+  .day-head{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin:14px 0 16px; gap:12px; flex-wrap:wrap;
+  }
+  .day-title{font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:0.5px;}
+  .day-date{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); margin-top:2px;}
+  .day-actions{display:flex; gap:8px;}
+  .btn{
+    font-family:'Inter',sans-serif; font-size:12px; font-weight:600;
+    padding:9px 13px; border-radius:8px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink); cursor:pointer;
+  }
+  .btn.primary{background:var(--good); border-color:var(--good); color:#12180F;}
+  .btn:active{transform:scale(0.97);}
+
+  .week-summary{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-dim);
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:10px 12px; margin-bottom:16px; line-height:1.6;
+  }
+  .week-summary b{color:var(--ink);}
+
+  /* Exercise card */
+  .card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:14px 14px 12px; margin-bottom:12px;
+  }
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .ex-name{font-size:15px; font-weight:700; line-height:1.3; color:var(--ink);}
+  .badge{
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:0.6px; text-transform:uppercase;
+    padding:3px 7px; border-radius:5px; white-space:nowrap; margin-top:2px;
+  }
+  .badge.compound{background:var(--compound-dim); color:var(--compound);}
+  .badge.isolation{background:var(--isolation-dim); color:var(--isolation);}
+
+  .stat-row{
+    display:flex; gap:14px; margin-top:8px; flex-wrap:wrap;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-dim);
+  }
+  .stat-row b{color:var(--ink);}
+
+  .plates{display:flex; gap:4px; margin-top:10px;}
+  .plate{
+    width:16px; height:16px; border-radius:50%;
+    border:2px solid var(--line); background:transparent;
+    transition:all .15s ease;
+  }
+  .plate.filled{background:var(--compound); border-color:var(--compound);}
+  .card.iso .plate.filled{background:var(--isolation); border-color:var(--isolation);}
+
+  .sets{margin-top:10px; display:flex; flex-direction:column; gap:6px;}
+  .set-row{
+    display:grid; grid-template-columns:28px 1fr 1fr 34px; gap:8px; align-items:center;
+  }
+  .set-label{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-faint); text-align:center;}
+  .set-row input{
+    width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:7px;
+    color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:13px;
+    padding:8px 8px; text-align:center;
+  }
+  .set-row input::placeholder{color:var(--ink-faint); opacity:0.7;}
+  .set-row input:focus{outline:none; border-color:var(--gold);}
+  .check{
+    width:34px; height:34px; border-radius:7px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--ink-faint); font-size:15px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .check.done{background:var(--good); border-color:var(--good); color:#12180F;}
+
+  .add-set{
+    margin-top:8px; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    color:var(--ink-dim); background:none; border:1px dashed var(--line);
+    border-radius:7px; padding:7px; width:100%; cursor:pointer;
+  }
+  .add-set:active{border-color:var(--gold); color:var(--gold);}
+
+  .field-labels{
+    display:grid; grid-template-columns:28px 1fr 1fr 34px; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:9px; color:var(--ink-faint);
+    text-transform:uppercase; letter-spacing:0.5px; margin-top:10px; padding:0 1px;
+  }
+  .field-labels span:nth-child(2), .field-labels span:nth-child(3){text-align:center;}
+
+  /* Guide */
+  .guide h2{
+    font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.5px;
+    color:var(--ink); margin:22px 0 8px;
+  }
+  .guide h2:first-child{margin-top:6px;}
+  .guide p, .guide li{font-size:13.5px; line-height:1.6; color:var(--ink-dim);}
+  .guide ul{padding-left:18px; margin:6px 0;}
+  .guide strong{color:var(--ink);}
+  .guide .chip-row{display:flex; gap:8px; margin:10px 0;}
+  .guide .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; padding:5px 10px; border-radius:7px;
+  }
+  .guide .chip.c{background:var(--compound-dim); color:var(--compound);}
+  .guide .chip.i{background:var(--isolation-dim); color:var(--isolation);}
+  .rir-table{width:100%; border-collapse:collapse; margin:10px 0; font-family:'IBM Plex Mono',monospace; font-size:12px;}
+  .rir-table td{padding:7px 8px; border-bottom:1px solid var(--line); color:var(--ink-dim);}
+  .rir-table td:first-child{color:var(--ink); font-weight:600; width:70px;}
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--good); color:#12180F; font-size:13px; font-weight:600;
+    padding:10px 18px; border-radius:20px; z-index:50;
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  .toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand-row">
+    <div>
+      <div class="brand">RUTINA<span>·</span>T/P</div>
+      <div class="brand-sub">Torso / Pierna · 4 días</div>
+    </div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+const DAYS = [
+  { key:"torso-a", label:"Torso A", exercises:[
+    {name:"Press banca (barra o mancuerna)", compound:true, series:4, reps:"6-8", rir:2, warmup:"2-3"},
+    {name:"Press inclinado mancuerna", compound:true, series:4, reps:"8-10", rir:2, warmup:"1-2"},
+    {name:"Jalón al pecho (agarre neutro)", compound:true, series:4, reps:"8-10", rir:2, warmup:"1-2"},
+    {name:"Remo en máquina/cable", compound:true, series:4, reps:"8-10", rir:2, warmup:"1-2"},
+    {name:"Elevación lateral", compound:false, series:3, reps:"12-15", rir:1, warmup:"0-1"},
+    {name:"Face pull", compound:false, series:3, reps:"12-15", rir:1, warmup:"0-1"},
+    {name:"Extensión tríceps cuerda (codo pegado al cuerpo)", compound:false, series:4, reps:"10-12", rir:1.5, warmup:"0-1"},
+    {name:"Curl martillo (agarre neutro)", compound:false, series:4, reps:"10-12", rir:1.5, warmup:"0-1"},
+  ]},
+  { key:"pierna-a", label:"Pierna A", exercises:[
+    {name:"Prensa de piernas", compound:true, series:4, reps:"8-10", rir:2, warmup:"2-3"},
+    {name:"Extensión de cuádriceps", compound:false, series:4, reps:"10-12", rir:1.5, warmup:"0-1"},
+    {name:"Curl femoral acostado", compound:false, series:3, reps:"10-12", rir:2, warmup:"0-1"},
+    {name:"Curl femoral sentado", compound:false, series:3, reps:"10-12", rir:1.5, warmup:"0-1"},
+    {name:"Hip thrust", compound:true, series:6, reps:"8-10", rir:2, warmup:"2-3"},
+    {name:"Elevación de talones de pie", compound:false, series:3, reps:"12-15", rir:1, warmup:"0-1"},
+    {name:"Elevación de talones sentado", compound:false, series:3, reps:"12-15", rir:1, warmup:"0-1"},
+  ]},
+  { key:"torso-b", label:"Torso B", exercises:[
+    {name:"Remo con mancuerna a un brazo", compound:true, series:3, reps:"8-10", rir:2, warmup:"1-2"},
+    {name:"Pull-over en polea", compound:false, series:3, reps:"10-12", rir:2, warmup:"0-1"},
+    {name:"Press en máquina/mancuerna", compound:true, series:3, reps:"8-10", rir:2, warmup:"1-2"},
+    {name:"Aperturas en máquina", compound:false, series:3, reps:"10-12", rir:1.5, warmup:"0-1"},
+    {name:"Press militar mancuerna", compound:true, series:4, reps:"8-10", rir:2, warmup:"2-3"},
+    {name:"Elevación frontal", compound:false, series:2, reps:"12-15", rir:1, warmup:"0-1"},
+    {name:"Fondos en máquina asistida (sin bloquear codo)", compound:true, series:4, reps:"10-12", rir:1.5, warmup:"1-2"},
+    {name:"Curl bíceps en polea", compound:false, series:4, reps:"10-12", rir:1.5, warmup:"0-1"},
+    {name:"Abdominales (crunch en polea + plancha)", compound:false, series:8, reps:"12-15 / 30-45s", rir:1.5, warmup:"0-1"},
+  ]},
+  { key:"pierna-b", label:"Pierna B", exercises:[
+    {name:"Peso muerto rumano (rango moderado)", compound:true, series:5, reps:"8-10", rir:2, warmup:"2-3"},
+    {name:"Hip thrust o patada de glúteo en cable", compound:true, series:3, reps:"10-12", rir:2, warmup:"1-2"},
+    {name:"Sentadilla búlgara (rango cómodo)", compound:true, series:3, reps:"8-10", rir:2, warmup:"1-2"},
+    {name:"Prensa pie alto (glúteo/isquio)", compound:true, series:3, reps:"10-12", rir:2, warmup:"1-2"},
+    {name:"Elevación de talones (variación)", compound:false, series:3, reps:"12-15", rir:1, warmup:"0-1"},
+    {name:"Abdominales (rueda o elevación de piernas)", compound:false, series:6, reps:"10-12", rir:1.5, warmup:"0-1"},
+  ]},
+];
+
+let activeTab = DAYS[0].key;
+// session[dayKey] = { date, exSets: { exIdx: [{peso,reps,done}, ...] } }
+let sessions = {};
+let history = {}; // history[dayKey] = array of past finalized sessions
+
+function todayStr(){
+  const d = new Date();
+  return d.toLocaleDateString('es-ES', { weekday:'short', day:'2-digit', month:'short' });
+}
+
+function emptySession(){ return { date: todayStr(), exSets:{} }; }
+
+function ensureExSets(dayKey, exIdx, targetSeries){
+  const s = sessions[dayKey];
+  if(!s.exSets[exIdx]){
+    s.exSets[exIdx] = Array.from({length: targetSeries}, () => ({peso:"", reps:"", done:false}));
+  }
+}
+
+async function loadDay(dayKey){
+  try{
+    const raw = localStorage.getItem(`session:${dayKey}`);
+    sessions[dayKey] = raw ? JSON.parse(raw) : emptySession();
+  }catch(e){
+    sessions[dayKey] = emptySession();
+  }
+  try{
+    const raw = localStorage.getItem(`history:${dayKey}`);
+    history[dayKey] = raw ? JSON.parse(raw) : [];
+  }catch(e){
+    history[dayKey] = [];
+  }
+}
+
+async function saveSession(dayKey){
+  try{
+    localStorage.setItem(`session:${dayKey}`, JSON.stringify(sessions[dayKey]));
+  }catch(e){ console.error("storage error", e); }
+}
+
+function lastValueFor(dayKey, exIdx, setIdx){
+  const h = history[dayKey];
+  if(!h || h.length===0) return null;
+  const last = h[h.length-1];
+  const sets = last.exSets && last.exSets[exIdx];
+  if(!sets || !sets[setIdx]) return null;
+  const s = sets[setIdx];
+  if(s.peso==="" && s.reps==="") return null;
+  return `${s.peso||"-"}kg × ${s.reps||"-"}`;
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+function renderTabs(){
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = "";
+  DAYS.forEach(d=>{
+    const el = document.createElement('div');
+    el.className = 'tab' + (activeTab===d.key ? ' active':'');
+    el.textContent = d.label;
+    el.onclick = ()=>{ activeTab=d.key; render(); };
+    tabs.appendChild(el);
+  });
+  const guideEl = document.createElement('div');
+  guideEl.className = 'tab guide-tab' + (activeTab==='guia' ? ' active':'');
+  guideEl.textContent = 'Guía';
+  guideEl.onclick = ()=>{ activeTab='guia'; render(); };
+  tabs.appendChild(guideEl);
+}
+
+function weeklySummary(){
+  const totals = {};
+  const add = (name, n) => totals[name] = (totals[name]||0)+n;
+  DAYS.forEach(d=>{
+    d.exercises.forEach(ex=>{});
+  });
+  return null; // not used directly; static text below instead
+}
+
+function renderDay(dayKey){
+  const day = DAYS.find(d=>d.key===dayKey);
+  const main = document.getElementById('main');
+  const s = sessions[dayKey];
+
+  let html = `
+    <div class="day-head">
+      <div>
+        <div class="day-title">${day.label}</div>
+        <div class="day-date">Sesión: ${s.date}</div>
+      </div>
+      <div class="day-actions">
+        <button class="btn" id="newSessionBtn">Nueva sesión</button>
+        <button class="btn primary" id="finishBtn">Finalizar</button>
+      </div>
+    </div>
+  `;
+
+  day.exercises.forEach((ex, idx)=>{
+    ensureExSets(dayKey, idx, ex.series);
+    const sets = s.exSets[idx];
+    const doneCount = sets.filter(x=>x.done).length;
+
+    let plates = "";
+    for(let i=0;i<ex.series;i++){
+      plates += `<div class="plate ${i < doneCount ? 'filled':''}"></div>`;
+    }
+
+    let setsHtml = "";
+    sets.forEach((set, si)=>{
+      const hint = lastValueFor(dayKey, idx, si);
+      setsHtml += `
+        <div class="set-row">
+          <div class="set-label">S${si+1}</div>
+          <input type="number" inputmode="decimal" placeholder="${hint ? hint.split('×')[0].trim() : 'kg'}"
+                 value="${set.peso}" data-ex="${idx}" data-set="${si}" data-field="peso" class="in-peso" />
+          <input type="number" inputmode="numeric" placeholder="${hint ? hint.split('×')[1].trim() : 'reps'}"
+                 value="${set.reps}" data-ex="${idx}" data-set="${si}" data-field="reps" class="in-reps" />
+          <div class="check ${set.done?'done':''}" data-ex="${idx}" data-set="${si}">${set.done?'✓':''}</div>
+        </div>
+      `;
+    });
+
+    html += `
+      <div class="card ${ex.compound?'':'iso'}">
+        <div class="card-top">
+          <div class="ex-name">${ex.name}</div>
+          <div class="badge ${ex.compound?'compound':'isolation'}">${ex.compound?'Compuesto':'Aislamiento'}</div>
+        </div>
+        <div class="stat-row">
+          <span><b>${ex.series}</b> series</span>
+          <span><b>${ex.reps}</b> reps</span>
+          <span>RIR <b>${ex.rir}</b></span>
+          <span>Calent. <b>${ex.warmup}</b></span>
+        </div>
+        <div class="plates">${plates}</div>
+        <div class="field-labels">
+          <span></span><span>Peso</span><span>Reps</span><span></span>
+        </div>
+        <div class="sets" data-ex-container="${idx}">${setsHtml}</div>
+        <button class="add-set" data-add="${idx}">+ Serie extra</button>
+      </div>
+    `;
+  });
+
+  main.innerHTML = html;
+
+  main.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input', (e)=>{
+      const exIdx = e.target.dataset.ex, setIdx = e.target.dataset.set, field = e.target.dataset.field;
+      sessions[dayKey].exSets[exIdx][setIdx][field] = e.target.value;
+      saveSession(dayKey);
+    });
+  });
+  main.querySelectorAll('.check').forEach(chk=>{
+    chk.addEventListener('click', (e)=>{
+      const exIdx = e.currentTarget.dataset.ex, setIdx = e.currentTarget.dataset.set;
+      const set = sessions[dayKey].exSets[exIdx][setIdx];
+      set.done = !set.done;
+      saveSession(dayKey);
+      renderDay(dayKey);
+    });
+  });
+  main.querySelectorAll('[data-add]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      const exIdx = e.currentTarget.dataset.add;
+      sessions[dayKey].exSets[exIdx].push({peso:"",reps:"",done:false});
+      saveSession(dayKey);
+      renderDay(dayKey);
+    });
+  });
+
+  document.getElementById('newSessionBtn').onclick = ()=>{
+    sessions[dayKey] = emptySession();
+    saveSession(dayKey);
+    renderDay(dayKey);
+    showToast('Nueva sesión iniciada');
+  };
+  document.getElementById('finishBtn').onclick = async ()=>{
+    const finished = JSON.parse(JSON.stringify(sessions[dayKey]));
+    history[dayKey] = history[dayKey] || [];
+    history[dayKey].push(finished);
+    if(history[dayKey].length > 12) history[dayKey].shift();
+    try{
+      localStorage.setItem(`history:${dayKey}`, JSON.stringify(history[dayKey]));
+    }catch(e){ console.error(e); }
+    sessions[dayKey] = emptySession();
+    await saveSession(dayKey);
+    renderDay(dayKey);
+    showToast('Sesión guardada ✓');
+  };
+}
+
+function renderGuide(){
+  const main = document.getElementById('main');
+  main.innerHTML = `
+    <div class="guide">
+      <h2>Cómo usar la app</h2>
+      <p>Cada día tiene tarjetas por ejercicio. Registra <strong>peso y reps</strong> por serie y toca el círculo para marcarla como hecha — los puntos de arriba de cada tarjeta se llenan como si fueran discos apilándose. Al terminar el día, toca <strong>Finalizar</strong> para guardar la sesión; la próxima vez verás tu último peso/reps como referencia (placeholder gris) en cada serie.</p>
+
+      <h2>Compuesto vs. aislamiento</h2>
+      <div class="chip-row">
+        <div class="chip c">● Compuesto</div>
+        <div class="chip i">● Aislamiento</div>
+      </div>
+      <p>Los <strong>compuestos</strong> mueven 2+ articulaciones (press, remo, prensa, hip thrust) — van primero, con RIR más conservador. Los de <strong>aislamiento</strong> mueven una sola articulación (curl, extensión, elevaciones) — se pueden llevar más cerca del fallo.</p>
+
+      <h2>RIR (Reps en Reserva)</h2>
+      <table class="rir-table">
+        <tr><td>RIR 0</td><td>Fallo total, ni una rep más</td></tr>
+        <tr><td>RIR 1</td><td>1 repetición de margen</td></tr>
+        <tr><td>RIR 2</td><td>2 repeticiones de margen</td></tr>
+        <tr><td>RIR 3+</td><td>Margen amplio — típico de semana de descarga</td></tr>
+      </table>
+      <p>Empieza el mesociclo en el RIR indicado por ejercicio y baja 1 punto cada semana hasta acercarte a RIR 0-1 en la semana 4. Luego, semana de descarga: menos series, RIR 3-4.</p>
+
+      <h2>Series de calentamiento</h2>
+      <ul>
+        <li>Primer compuesto de cada grupo muscular: <strong>2-3 series</strong> (50% → 70% → 85% del peso de trabajo)</li>
+        <li>Compuestos siguientes del mismo grupo: <strong>1-2 series</strong></li>
+        <li>Aislamiento: <strong>0-1 serie</strong>, casi nunca necesario si ya vienes caliente</li>
+      </ul>
+      <p>No cuentan como series efectivas — son para preparar la articulación antes del peso real.</p>
+
+      <h2>Cuidado articular</h2>
+      <ul>
+        <li><strong>Codo derecho:</strong> agarre neutro en curl/extensión de tríceps. Si molesta, baja peso o cambia a máquina.</li>
+        <li><strong>Cadera derecha:</strong> en peso muerto rumano y sentadilla búlgara, corta el rango donde sientas la cadera comprometida — no fuerces profundidad.</li>
+      </ul>
+
+      <h2>Volumen semanal (series efectivas)</h2>
+      <p>Pecho 14 · Espalda 14 · Hombro 12 · Tríceps 8 · Bíceps 8 · Cuádriceps 14 · Isquios 14 · Glúteo 14 · Pantorrilla 12 · Abdominales 14 — zona MEV-moderada para empezar el mesociclo.</p>
+    </div>
+  `;
+}
+
+async function render(){
+  renderTabs();
+  if(activeTab==='guia'){
+    renderGuide();
+    return;
+  }
+  if(!sessions[activeTab]){
+    await loadDay(activeTab);
+  }
+  renderDay(activeTab);
+}
+
+function maybeShowInstallHint(){
+  const seen = localStorage.getItem('install-hint-seen');
+  if(seen) return;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  if(isStandalone) { localStorage.setItem('install-hint-seen','1'); return; }
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;display:flex;align-items:flex-end;justify-content:center;';
+  overlay.innerHTML = `
+    <div style="background:#242220;border:1px solid #3A362F;border-radius:16px 16px 0 0;padding:20px 20px 26px;max-width:480px;width:100%;font-family:'Inter',sans-serif;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:#F0EBDD;margin-bottom:8px;">Instálala como app</div>
+      <div style="font-size:13px;color:#A69C8C;line-height:1.6;margin-bottom:14px;">
+        Para que quede como ícono en tu pantalla de inicio y tus datos se guarden en tu teléfono:<br><br>
+        <b style="color:#F0EBDD;">iPhone (Safari):</b> toca Compartir → "Añadir a pantalla de inicio"<br>
+        <b style="color:#F0EBDD;">Android (Chrome):</b> toca el menú ⋮ → "Añadir a pantalla de inicio"
+      </div>
+      <button id="dismissHint" style="width:100%;padding:12px;border-radius:8px;border:none;background:#C1501F;color:#1B1A17;font-weight:700;font-size:13px;">Entendido</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.getElementById('dismissHint').onclick = ()=>{
+    localStorage.setItem('install-hint-seen','1');
+    overlay.remove();
+  };
+}
+
+// Preload all days in background for faster tab switches, then render
+(async ()=>{
+  render();
+  maybeShowInstallHint();
+  for(const d of DAYS){
+    if(d.key!==activeTab) await loadDay(d.key);
+  }
+})();
+</script>
+</body>
+</html>
